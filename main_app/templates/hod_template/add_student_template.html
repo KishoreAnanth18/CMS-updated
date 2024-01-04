@@ -1,0 +1,205 @@
+{% extends 'main_app/base_edit.html' %}
+{% load static %}
+{% block custom_css %}
+<style>
+    .invalid {
+        font-style: italic;
+        font-weight: bold;
+        color: red;
+    }
+
+    .valid {
+        font-style: italic;
+        font-weight: bold;
+        color: green;
+    }
+</style>
+{% endblock custom_css %}
+{% block page_title %}Register Student{% endblock page_title %}
+
+{% block content %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-dark">
+                    <div class="card-header">
+                        <h3 class="card-title">Student Details</h3>
+                    </div>
+                    {% include "main_app/form_template.html" with messages=messages form=form button_text="Register"%}
+                </div>
+                <!-- /.card -->
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+{% block custom_js %}
+<script>
+     function isEmpty(value) {
+        return !value.trim();
+    }
+    function validateEmail(email) {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+    function validatePassword(password) {
+        // Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number, and one special character
+        const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        return re.test(password);
+    }
+
+    $(document).ready(function () {
+        // Validate first name
+        $("#id_first_name").keyup(function () {
+            var firstName = $(this).val();
+            if (isEmpty(firstName)) {
+                $(".first_name_error").remove();
+                $("<span class='invalid first_name_error'>First Name is required</span>").insertAfter("#id_first_name");
+            } else {
+                $(".first_name_error").remove();
+                $("<span class='valid first_name_error'>First Name is valid</span>").insertAfter("#id_first_name");
+            }
+        });
+
+        // Validate last name
+        $("#id_last_name").keyup(function () {
+            var lastName = $(this).val();
+            if (isEmpty(lastName)) {
+                $(".last_name_error").remove();
+                $("<span class='invalid last_name_error'>Last Name is required</span>").insertAfter("#id_last_name");
+            } else {
+                $(".last_name_error").remove();
+                $("<span class='valid last_name_error'>Last Name is valid</span>").insertAfter("#id_last_name");
+            }
+        });
+
+        //Validate email
+        $("#id_email").keyup(function () {
+            
+            var email = $(this).val()
+            if (validateEmail(email)) {
+                $.ajax({
+                    url: "{% url 'check_email_availability' %}",
+                    type: 'POST',
+                    data: { email: email }
+                }).done(function (response) {
+                    if (response == "True") {
+                        $(".email_error").remove()
+                        $("<span class='invalid email_error'>Email Address Already Exist</span>").insertAfter("#id_email");
+                    }
+                    else {
+                        $(".email_error").remove()
+
+                        $("<span class='valid email_error'>Email Address Available</span>").insertAfter("#id_email");
+                    }
+                }).fail(function (response) {
+                    $("<span class='alert alert-warning'>Server Could Not Process This</span>").insertAfter("#id_email");
+                })
+            }
+        });
+
+        // Validate password
+        $("#id_password").keyup(function () {
+            var password = $(this).val();
+            if (validatePassword(password)) {
+                $(".password_error").remove();
+                $("<span class='valid password_error'>Password is valid</span>").insertAfter("#id_password");
+            } else {
+                $(".password_error").remove();
+                $("<span class='invalid password_error'>Password should be at least 8 characters, and contains uppercase, number, symbol</span>").insertAfter("#id_password");
+            }
+        });
+
+        // Validate Address
+        $("#id_address").keyup(function () {
+            var address = $(this).val();
+            if (isEmpty(address)) {
+                $(".address_error").remove();
+                $("<span class='invalid address_error'>Address is required</span>").insertAfter("#id_address");
+            } else {
+                $(".address_error").remove();
+                $("<span class='valid address_error'>Address is valid</span>").insertAfter("#id_address");
+            }
+        });
+
+        // Validate Father Name
+        $("#id_father_name").keyup(function () {
+            var fatherName = $(this).val();
+            if (isEmpty(fatherName)) {
+                $(".father_name_error").remove();
+                $("<span class='invalid father_name_error'>Father Name is required</span>").insertAfter("#id_father_name");
+            } else {
+                $(".father_name_error").remove();
+                $("<span class='valid father_name_error'>Father Name is valid</span>").insertAfter("#id_father_name");
+            }
+        });
+
+        // Validate Father Occupation
+        $("#id_father_occupation").keyup(function () {
+            var fatherOccupation = $(this).val();
+            if (isEmpty(fatherOccupation)) {
+                $(".father_occupation_error").remove();
+                $("<span class='invalid father_occupation_error'>Father Occupation is required</span>").insertAfter("#id_father_occupation");
+            } else {
+                $(".father_occupation_error").remove();
+                $("<span class='valid father_occupation_error'>Father Occupation is valid</span>").insertAfter("#id_father_occupation");
+            }
+        });
+
+        // Validate Mother Name
+        $("#id_mother_name").keyup(function () {
+            var motherName = $(this).val();
+            if (isEmpty(motherName)) {
+                $(".mother_name_error").remove();
+                $("<span class='invalid mother_name_error'>Mother Name is required</span>").insertAfter("#id_mother_name");
+            } else {
+                $(".mother_name_error").remove();
+                $("<span class='valid mother_name_error'>Mother Name is valid</span>").insertAfter("#id_mother_name");
+            }
+        });
+
+        // Validate Mother Occupation
+        $("#id_mother_occupation").keyup(function () {
+            var motherOccupation = $(this).val();
+            if (isEmpty(motherOccupation)) {
+                $(".mother_occupation_error").remove();
+                $("<span class='invalid mother_occupation_error'>Mother Occupation is required</span>").insertAfter("#id_mother_occupation");
+            } else {
+                $(".mother_occupation_error").remove();
+                $("<span class='valid mother_occupation_error'>Mother Occupation is valid</span>").insertAfter("#id_mother_occupation");
+            }
+        });
+
+        // Validate 10th Mark
+        $("#id_mark_10").keyup(function () {
+            var mark10 = $(this).val();
+            if (isNaN(mark10) || mark10 <= 0 || mark10 > 100) {
+                $(".mark_10_error").remove();
+                $("<span class='invalid mark_10_error'>Enter a valid percentage for 10th Mark</span>").insertAfter("#id_mark_10");
+            } else {
+                $(".mark_10_error").remove();
+                $("<span class='valid mark_10_error'>10th Mark is valid</span>").insertAfter("#id_mark_10");
+            }
+        });
+
+        // Validate 12th Mark
+        $("#id_mark_12").keyup(function () {
+            var mark12 = $(this).val();
+            if (isNaN(mark12) || mark12 <= 0 || mark12 > 100) {
+                $(".mark_12_error").remove();
+                $("<span class='invalid mark_12_error'>Enter a valid percentage for 12th Mark</span>").insertAfter("#id_mark_12");
+            } else {
+                $(".mark_12_error").remove();
+                $("<span class='valid mark_12_error'>12th Mark is valid</span>").insertAfter("#id_mark_12");
+            }
+        });
+
+        
+
+    });
+</script>
+{% endblock custom_js %}
