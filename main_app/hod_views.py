@@ -97,17 +97,20 @@ def add_staff(request):
             email = form.cleaned_data.get('email')
             gender = form.cleaned_data.get('gender')
             password = form.cleaned_data.get('password')
-            course = form.cleaned_data.get('course')
-            passport = request.FILES.get('profile_pic')
-            fs = FileSystemStorage()
-            filename = fs.save(passport.name, passport)
-            passport_url = fs.url(filename)
+            academic_qualification = form.cleaned_data.get('academic_qualification')
+            work_experience = form.cleaned_data.get('work_experience')
+ 
             try:
-                user = CustomUser.objects.create_user(
-                    email=email, password=password, user_type=2, first_name=first_name, last_name=last_name, profile_pic=passport_url)
-                user.gender = gender
+                user = StaffData()
+                user.first_name = first_name
+                user.last_name = last_name
+                user.user_type = 2
                 user.address = address
-                user.staff.course = course
+                user.email = email
+                user.gender = gender
+                user.password = password
+                user.academic_qualification = academic_qualification
+                user.work_experience = work_experience
                 user.save()
                 messages.success(request, "Successfully Added")
                 return redirect(reverse('add_staff'))
@@ -214,7 +217,7 @@ def add_subject(request):
 
 
 def manage_staff(request):
-    allStaff = CustomUser.objects.filter(user_type=2)
+    allStaff = StaffData.objects.filter(user_type=2)
     context = {
         'allStaff': allStaff,
         'page_title': 'Manage Staff'
@@ -250,53 +253,23 @@ def manage_subject(request):
 
 
 def edit_staff(request, staff_id):
-    staff = get_object_or_404(Staff, id=staff_id)
-    form = StaffForm(request.POST or None, instance=staff)
-    context = {
-        'form': form,
-        'staff_id': staff_id,
-        'page_title': 'Edit Staff'
-    }
-    if request.method == 'POST':
-        if form.is_valid():
-            first_name = form.cleaned_data.get('first_name')
-            last_name = form.cleaned_data.get('last_name')
-            address = form.cleaned_data.get('address')
-            username = form.cleaned_data.get('username')
-            email = form.cleaned_data.get('email')
-            gender = form.cleaned_data.get('gender')
-            password = form.cleaned_data.get('password') or None
-            course = form.cleaned_data.get('course')
-            passport = request.FILES.get('profile_pic') or None
-            try:
-                user = CustomUser.objects.get(id=staff.admin.id)
-                user.username = username
-                user.email = email
-                if password != None:
-                    user.set_password(password)
-                if passport != None:
-                    fs = FileSystemStorage()
-                    filename = fs.save(passport.name, passport)
-                    passport_url = fs.url(filename)
-                    user.profile_pic = passport_url
-                user.first_name = first_name
-                user.last_name = last_name
-                user.gender = gender
-                user.address = address
-                staff.course = course
-                user.save()
-                staff.save()
-                messages.success(request, "Successfully Updated")
-                return redirect(reverse('edit_staff', args=[staff_id]))
-            except Exception as e:
-                messages.error(request, "Could Not Update " + str(e))
-        else:
-            messages.error(request, "Please fil form properly")
-    else:
-        user = CustomUser.objects.get(id=staff_id)
-        staff = Staff.objects.get(id=user.id)
-        return render(request, "hod_template/edit_staff_template.html", context)
-
+    staff = get_object_or_404(StaffData, id=staff_id)
+    try:
+        user = CustomUser.objects.create_user(
+            email=staff.email, password=staff.password, user_type=2, first_name=staff.first_name, last_name=staff.last_name
+        )
+        user.gender = staff.gender
+        user.address = staff.address
+        user.academic_qualification = staff.academic_qualification
+        user.work_experience = staff.work_experience
+        user.save()
+        staff.status = "Approved"
+        staff.save()
+        messages.success(request, "Staff approved")
+    except Exception as e:
+        messages.error(request, "Could Not Add: " + str(e))
+    return redirect(reverse('manage_staff'))
+    
 
 def edit_student(request, student_id):
     student = get_object_or_404(StudentData, id=student_id)
@@ -318,52 +291,7 @@ def edit_student(request, student_id):
     except Exception as e:
         messages.error(request, "Could Not Add: " + str(e))
     return redirect(reverse('manage_student'))
-    # form = StudentForm(request.POST or None, instance=student)
-    # context = {
-    #     'form': form,
-    #     'student_id': student_id,
-    #     'page_title': 'Edit Student'
-    # }
-    # if request.method == 'POST':
-    #     if form.is_valid():
-    #         first_name = form.cleaned_data.get('first_name')
-    #         last_name = form.cleaned_data.get('last_name')
-    #         address = form.cleaned_data.get('address')
-    #         username = form.cleaned_data.get('username')
-    #         email = form.cleaned_data.get('email')
-    #         gender = form.cleaned_data.get('gender')
-    #         password = form.cleaned_data.get('password') or None
-    #         course = form.cleaned_data.get('course')
-    #         session = form.cleaned_data.get('session')
-    #         passport = request.FILES.get('profile_pic') or None
-    #         try:
-    #             user = CustomUser.objects.get(id=student.admin.id)
-    #             if passport != None:
-    #                 fs = FileSystemStorage()
-    #                 filename = fs.save(passport.name, passport)
-    #                 passport_url = fs.url(filename)
-    #                 user.profile_pic = passport_url
-    #             user.username = username
-    #             user.email = email
-    #             if password != None:
-    #                 user.set_password(password)
-    #             user.first_name = first_name
-    #             user.last_name = last_name
-    #             student.session = session
-    #             user.gender = gender
-    #             user.address = address
-    #             student.course = course
-    #             user.save()
-    #             student.save()
-    #             messages.success(request, "Successfully Updated")
-    #             return redirect(reverse('edit_student', args=[student_id]))
-    #         except Exception as e:
-    #             messages.error(request, "Could Not Update " + str(e))
-    #     else:
-    #         messages.error(request, "Please Fill Form Properly!")
-    # else:
-    #     return render(request, "hod_template/edit_student_template.html", context)
-
+    
 
 def edit_course(request, course_id):
     instance = get_object_or_404(Course, id=course_id)
@@ -710,7 +638,7 @@ def send_staff_notification(request):
 
 
 def delete_staff(request, staff_id):
-    staff = get_object_or_404(CustomUser, staff__id=staff_id)
+    staff = get_object_or_404(StaffData, id=staff_id)
     staff.delete()
     messages.success(request, "Staff deleted successfully!")
     return redirect(reverse('manage_staff'))

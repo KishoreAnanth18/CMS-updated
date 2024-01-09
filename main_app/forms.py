@@ -18,12 +18,12 @@ class CustomUserForm(FormSettings):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     address = forms.CharField(widget=forms.Textarea)
-    father_name = forms.CharField(max_length=150)
-    father_occupation = forms.CharField(max_length=150)
-    mother_name = forms.CharField(max_length=150)
-    mother_occupation = forms.CharField(max_length=150)
-    mark_10 = forms.FloatField(required=False)
-    mark_12 = forms.FloatField(required=False)
+    # father_name = forms.CharField(max_length=150)
+    # father_occupation = forms.CharField(max_length=150)
+    # mother_name = forms.CharField(max_length=150)
+    # mother_occupation = forms.CharField(max_length=150)
+    # mark_10 = forms.FloatField(required=False)
+    # mark_12 = forms.FloatField(required=False)
     password = forms.CharField(widget=forms.PasswordInput)
     widget = {
         'password': forms.PasswordInput(),
@@ -66,7 +66,8 @@ class StudentForm(CustomUserForm):
 
     class Meta(CustomUserForm.Meta):
         model = StudentData
-        fields = CustomUserForm.Meta.fields
+        fields = CustomUserForm.Meta.fields + \
+            ['father_name','father_occupation','mother_name','mother_occupation','mark_10','mark_12']
 
 
 class AdminForm(CustomUserForm):
@@ -83,9 +84,9 @@ class StaffForm(CustomUserForm):
         super(StaffForm, self).__init__(*args, **kwargs)
 
     class Meta(CustomUserForm.Meta):
-        model = Staff
+        model = StaffData
         fields = CustomUserForm.Meta.fields + \
-            ['course' ]
+        ['academic_qualification', 'work_experience']
 
 
 class CourseForm(FormSettings):

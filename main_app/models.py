@@ -57,6 +57,8 @@ class CustomUser(AbstractUser):
     mother_occupation = models.CharField(max_length=150, blank=True)
     mark_10 = models.FloatField(blank=True, null=True)
     mark_12 = models.FloatField(blank=True, null=True)
+    academic_qualification = models.TextField(blank=True)
+    work_experience = models.TextField(blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
@@ -123,6 +125,29 @@ class Staff(models.Model):
     def __str__(self):
         return self.admin.last_name + " " + self.admin.first_name
 
+class StaffData(models.Model):
+    USER_TYPE = ((1, "HOD"), (2, "Staff"), (3, "Student"))
+    GENDER = [("M", "Male"), ("F", "Female")]
+    
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150, blank=True)
+    username = None  # Removed username, using email instead
+    email = models.EmailField(unique=True)
+    password = models.CharField(default="pass",max_length=150)
+    user_type = models.CharField(default=1, choices=USER_TYPE, max_length=1)
+    gender = models.CharField(max_length=1, choices=GENDER)
+    profile_pic = models.ImageField(blank=True)
+    status = models.CharField(max_length=150, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    address = models.TextField(blank=True)
+    academic_qualification = models.TextField(blank=True)
+    work_experience = models.TextField(blank=True)
+
+    objects = CustomUserManager()
+
+    def __str__(self):
+        return self.admin.last_name + ", " + self.admin.first_name
 
 class Subject(models.Model):
     name = models.CharField(max_length=120)

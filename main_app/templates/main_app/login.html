@@ -83,11 +83,17 @@
                         <!-- /.col -->
                     </div>
                 </form>
-                <div class="col-6">
-                    <button type="submit" class="btn btn-success btn-block"><a href="{% url 'user_register' %}"
-                            style="color: white;">Register Student</a></button>
+                <div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-success btn-block"><a href="{% url 'student_register' %}"
+                                style="color: white;">Register Student</a></button>
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-success btn-block"><a href="{% url 'staff_register' %}"
+                                style="color: white;">Register Staff</a></button>
+                    </div>    
                 </div>
-
+                
 
                 <p class="mb-1">
                     <a href="{% url 'password_reset' %}">Forgot Password?</a>

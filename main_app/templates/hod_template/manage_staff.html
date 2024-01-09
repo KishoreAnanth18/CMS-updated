@@ -17,36 +17,34 @@
                         <table id="example2" class="table table-bordered table-hover">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>#</th>
+                                    <th>S.no</th>
                                     <th>Full Name</th>
                                     <th>Email</th>
                                     <th>Gender</th>
-                                    <th>Course</th>
-                                    <th>Avatar</th>
-                                    <th>Actions</th>
+                                    <th>Academic Qualification</th>
+                                    <th>Work Experience</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for staff in allStaff %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
-                                    <td>{{staff.last_name}}, {{staff.first_name}}</td>
+                                    <td>{{staff.first_name}} {{staff.last_name}}</td>
                                     <td>{{staff.email}}</td>
                                     <td>{{staff.gender}}</td>
-                                    <td>{{staff.staff.course.name}}</td>
+                                    <td>{{staff.academic_qualification}}</td>
+                                    <td>{{staff.work_experience}}</td>
+                                    {% if staff.status == "Approved" %}
+                                        <td>Approved</td>
+                                    {% else %}
                                     <td>
-                                        {% if staff.profile_pic == ""  %}
-                                        No Image
-                                        {% else %}
-                                        <img class="img img-fluid mb-2" height="56" width="56"
-                                            src="{{staff.profile_pic}}" alt="">
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'edit_staff' staff.staff.id %}" class="btn btn-info">Edit</a> - 
-                                        <a href="{% url 'delete_staff' staff.staff.id %}" class="btn btn-danger" onclick="return confirm('Are you sure about this ?')">Delete</a>
+                                        <a href="{% url 'edit_staff' staff.id %}" class="btn btn-info">Approve</a>
+                                        <a href="{% url 'delete_staff' staff.id %}" class="btn btn-danger" onclick="return confirm('Are you sure about this ?')">Reject</a>
                                     
                                     </td>
+                                    {% endif %}
+                                    
                                 </tr>
                                 {% endfor %}
                             </tbody>

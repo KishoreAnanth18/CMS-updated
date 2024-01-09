@@ -4,7 +4,7 @@ The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
 Examples:
 Function views
-    1. Add an import:  from my_app import views
+    1. Add an import:  from my_app import viewsg
     2. Add a URL to urlpatterns:  path('', views.home, name='home')
 Class-based views
     1. Add an import:  from other_app.views import Home
@@ -24,7 +24,8 @@ urlpatterns = [
     path("get_attendance", views.get_attendance, name='get_attendance'),
     path("firebase-messaging-sw.js", views.showFirebaseJS, name='showFirebaseJS'),
     path("doLogin/", views.doLogin, name='user_login'),
-    path("doRegister/", hod_views.add_student, name = 'user_register'),
+    path("doStudentRegister/", hod_views.add_student, name = 'student_register'),
+    path("doStaffRegister/", hod_views.add_staff, name = 'staff_register'),
     path("logout_user/", views.logout_user, name='user_logout'),
     path("admin/home/", hod_views.admin_home, name='admin_home'),
     path("staff/add", hod_views.add_staff, name='add_staff'),
