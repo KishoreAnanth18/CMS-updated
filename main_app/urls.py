@@ -42,7 +42,6 @@ urlpatterns = [
          name='admin_view_profile'),
     path("check_email_availability", hod_views.check_email_availability,
          name="check_email_availability"),
-    path("approve_student", hod_views.approve_student, name="approve_student"),
     path("session/manage/", hod_views.manage_session, name='manage_session'),
     path("session/edit/<int:session_id>",
          hod_views.edit_session, name='edit_session'),

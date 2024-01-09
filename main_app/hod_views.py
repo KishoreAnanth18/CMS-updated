@@ -311,7 +311,9 @@ def edit_student(request, student_id):
         user.mother_occupation = student.mother_occupation
         user.mark_10 = student.mark_10
         user.mark_12 = student.mark_12
+        student.status = "Approved"
         user.save()    
+        student.save()
         messages.success(request, "Student approved")
     except Exception as e:
         messages.error(request, "Could Not Add: " + str(e))
@@ -471,9 +473,6 @@ def check_email_availability(request):
     except Exception as e:
         return HttpResponse(False)
 
-@csrf_exempt
-def approve_student(request):
-   return HttpResponse(True)
 
 @csrf_exempt
 def student_feedback_message(request):
